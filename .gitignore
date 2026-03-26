@@ -1,0 +1,27 @@
+# Python / environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.pdfvenv/
+pdf_content.txt
+*.env
+.env
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# MacOS
+.DS_Store
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+
+# Docker info (optional)
+# docker-compose.override.yml
