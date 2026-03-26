@@ -352,7 +352,7 @@ function LoginPage({ onLogin, onSwitchToRegister, onSwitchToStaff }) {
       <div className="auth-card">
         <div className="role-badge">Customer</div>
         <h1>Đăng nhập</h1>
-        <p className="subtitle">Chào mừng quay lại DigiShop</p></
+        <p className="subtitle">Chào mừng quay lại DigiShop</p>
         {error && <div className="error-msg">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group"><label>Tên đăng nhập</label>
