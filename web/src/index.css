@@ -1,19 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --bg: #0f1014;
-  --surface: #1a1b22;
-  --surface-hover: #23252e;
-  --surface-active: #2a2d38;
-  --text: #f0f0f5;
-  --text-secondary: #8a8d9b;
-  --accent: #00d2ff;
-  --accent-dark: #00a4cc;
-  --border: #2c2e3b;
-  --danger: #ff4757;
-  --danger-dark: #e8374a;
-  --success: #2ed573;
-  --warning: #ffa502;
+  --bg: #f8f9fc;
+  --surface: #ffffff;
+  --surface-hover: #f0f2f8;
+  --surface-active: #e8ebf4;
+  --text: #1a1d2e;
+  --text-secondary: #6b7280;
+  --accent: #6366f1;
+  --accent-dark: #4f46e5;
+  --border: #e2e6ef;
+  --danger: #ef4444;
+  --danger-dark: #dc2626;
+  --success: #22c55e;
+  --warning: #f59e0b;
   --radius: 12px;
   --radius-sm: 8px;
   --transition: 0.2s ease;
@@ -70,7 +70,7 @@ a {
 .auth-card .role-badge {
   display: inline-block;
   background: var(--accent);
-  color: #000;
+  color: #fff;
   font-size: 0.7rem;
   font-weight: 700;
   padding: 0.2rem 0.6rem;
@@ -169,7 +169,7 @@ a {
 
 .btn-primary {
   background: var(--accent);
-  color: #000;
+  color: #fff;
 }
 
 .btn-primary:hover {
@@ -273,7 +273,7 @@ a {
 
 .nav-item.active {
   background: var(--accent);
-  color: #000;
+  color: #fff;
 }
 
 .nav-item.danger {
@@ -637,7 +637,7 @@ a {
 
 .tab.active {
   background: var(--accent);
-  color: #000;
+  color: #fff;
   border-color: var(--accent);
 }
 
