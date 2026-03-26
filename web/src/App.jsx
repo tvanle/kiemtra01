@@ -59,7 +59,7 @@ function CustomerDashboard({ user, onLogout }) {
   return (
     <div className="app-container">
       <aside className="sidebar">
-        <div className="brand">KTPM <span>Store</span></div>
+        <div className="brand">Digi<span>Shop</span></div>
         <nav className="nav-menu">
           <button className={`nav-item ${view === 'browse' && tab === 'laptops' ? 'active' : ''}`}
             onClick={() => { setView('browse'); setTab('laptops') }}>💻 Laptops</button>
@@ -215,7 +215,7 @@ function StaffDashboard({ user, onLogout }) {
   return (
     <div className="app-container">
       <aside className="sidebar">
-        <div className="brand">KTPM <span>Admin</span></div>
+        <div className="brand">Digi<span>Shop</span></div>
         <nav className="nav-menu">
           <button className={`nav-item ${tab === 'laptop' ? 'active' : ''}`}
             onClick={() => setTab('laptop')}>💻 Quản lý Laptop</button>
@@ -352,7 +352,7 @@ function LoginPage({ onLogin, onSwitchToRegister, onSwitchToStaff }) {
       <div className="auth-card">
         <div className="role-badge">Customer</div>
         <h1>Đăng nhập</h1>
-        <p className="subtitle">Chào mừng quay lại KTPM Store</p>
+        <p className="subtitle">Chào mừng quay lại DigiShop</p></
         {error && <div className="error-msg">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group"><label>Tên đăng nhập</label>
@@ -395,7 +395,7 @@ function RegisterPage({ onRegister, onSwitchToLogin }) {
       <div className="auth-card">
         <div className="role-badge">Customer</div>
         <h1>Đăng ký</h1>
-        <p className="subtitle">Tạo tài khoản mua sắm tại KTPM Store</p>
+        <p className="subtitle">Tạo tài khoản mua sắm tại DigiShop</p></
         {error && <div className="error-msg">{error}</div>}
         {success && <div className="success-msg">{success}</div>}
         <form onSubmit={handleSubmit}>
@@ -435,7 +435,7 @@ function StaffLoginPage({ onLogin, onSwitchToCustomer }) {
       <div className="auth-card">
         <div className="role-badge">Staff</div>
         <h1>Đăng nhập Nhân viên</h1>
-        <p className="subtitle">Truy cập bảng quản trị KTPM Store</p>
+        <p className="subtitle">Truy cập bảng quản trị DigiShop</p></
         {error && <div className="error-msg">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group"><label>Tên đăng nhập</label>
