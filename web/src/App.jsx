@@ -6,7 +6,7 @@ import { api } from './api'
 function CustomerDashboard({ user, onLogout }) {
   const [tab, setTab] = useState('laptops')
   const [laptops, setLaptops] = useState([])
-  const [mobiles, setMobiles] = useState([])
+  const [clothes, setClothes] = useState([])
   const [search, setSearch] = useState('')
   const [cart, setCart] = useState([]) // local cart
   const [view, setView] = useState('browse') // browse | cart
@@ -18,13 +18,13 @@ function CustomerDashboard({ user, onLogout }) {
       if (search) {
         const data = await api.searchProducts(search)
         setLaptops(data.laptops || [])
-        setMobiles(data.mobiles || [])
+        setClothes(data.clothes || [])
       } else {
-        const [l, m] = await Promise.all([api.getLaptops(), api.getMobiles()])
+        const [l, m] = await Promise.all([api.getLaptops(), api.getClothes()])
         setLaptops(Array.isArray(l) ? l : [])
-        setMobiles(Array.isArray(m) ? m : [])
+        setClothes(Array.isArray(m) ? m : [])
       }
-    } catch { setLaptops([]); setMobiles([]) }
+    } catch { setLaptops([]); setClothes([]) }
     setLoading(false)
   }, [search])
 
@@ -53,7 +53,7 @@ function CustomerDashboard({ user, onLogout }) {
     }))
   }
 
-  const products = tab === 'laptops' ? laptops : mobiles
+  const products = tab === 'laptops' ? laptops : clothes
   const cartTotal = cart.reduce((sum, i) => sum + parseFloat(i.price) * i.qty, 0)
 
   return (
@@ -63,8 +63,8 @@ function CustomerDashboard({ user, onLogout }) {
         <nav className="nav-menu">
           <button className={`nav-item ${view === 'browse' && tab === 'laptops' ? 'active' : ''}`}
             onClick={() => { setView('browse'); setTab('laptops') }}>💻 Laptops</button>
-          <button className={`nav-item ${view === 'browse' && tab === 'mobiles' ? 'active' : ''}`}
-            onClick={() => { setView('browse'); setTab('mobiles') }}>📱 Smartphones</button>
+          <button className={`nav-item ${view === 'browse' && tab === 'clothes' ? 'active' : ''}`}
+            onClick={() => { setView('browse'); setTab('clothes') }}>👕 Clothes</button>
           <button className={`nav-item ${view === 'cart' ? 'active' : ''}`}
             onClick={() => setView('cart')}>🛒 Giỏ hàng ({cart.length})</button>
           <div style={{ flex: 1 }} />
@@ -92,7 +92,7 @@ function CustomerDashboard({ user, onLogout }) {
                     <div className="cart-item" key={`${item.type}-${item.id}`}>
                       <div className="cart-item-info">
                         <h3>{item.name}</h3>
-                        <span className="meta">{item.brand} · {item.type === 'laptop' ? 'Laptop' : 'Mobile'}</span>
+                        <span className="meta">{item.brand} · {item.type === 'laptop' ? 'Laptop' : 'Clothes'}</span>
                       </div>
                       <div className="cart-item-right">
                         <div className="qty-control">
@@ -115,7 +115,7 @@ function CustomerDashboard({ user, onLogout }) {
         ) : (
           <>
             <div className="page-header">
-              <h1>Khám phá <span>{tab === 'laptops' ? 'Laptops' : 'Smartphones'}</span></h1>
+              <h1>Khám phá <span>{tab === 'laptops' ? 'Laptops' : 'Clothes'}</span></h1>
               <div className="header-actions">
                 <form className="search-box" onSubmit={(e) => { e.preventDefault(); fetchProducts() }}>
                   <input placeholder="Tìm kiếm sản phẩm..." value={search} onChange={e => setSearch(e.target.value)} />
@@ -135,7 +135,7 @@ function CustomerDashboard({ user, onLogout }) {
                 {products.map(p => (
                   <div key={p.id} className="product-card">
                     <div className="product-img">{p.brand?.charAt(0)}</div>
-                    <span className="product-badge">{tab === 'laptops' ? 'laptop' : 'mobile'}</span>
+                    <span className="product-badge">{tab === 'laptops' ? 'laptop' : 'clothes'}</span>
                     <div className="product-brand">{p.brand}</div>
                     <h3>{p.name}</h3>
                     <div className="product-price">${parseFloat(p.price).toLocaleString()}</div>
@@ -150,7 +150,7 @@ function CustomerDashboard({ user, onLogout }) {
                       </>)}
                     </div>
                     <div className="product-actions">
-                      <button className="btn btn-primary btn-sm" onClick={() => addToCart(p, tab === 'laptops' ? 'laptop' : 'mobile')}>
+                      <button className="btn btn-primary btn-sm" onClick={() => addToCart(p, tab === 'laptops' ? 'laptop' : 'clothes')}>
                         Thêm vào giỏ
                       </button>
                     </div>
@@ -168,7 +168,7 @@ function CustomerDashboard({ user, onLogout }) {
 /* ─────────────────── STAFF DASHBOARD ─────────────────── */
 function StaffDashboard({ user, onLogout }) {
   const [tab, setTab] = useState('laptop')
-  const [data, setData] = useState({ laptops: [], mobiles: [] })
+  const [data, setData] = useState({ laptops: [], clothes: [] })
   const [modal, setModal] = useState(null) // null | 'create' | 'edit'
   const [editItem, setEditItem] = useState(null)
   const [form, setForm] = useState({})
@@ -210,7 +210,7 @@ function StaffDashboard({ user, onLogout }) {
     refresh()
   }
 
-  const products = tab === 'laptop' ? data.laptops : data.mobiles
+  const products = tab === 'laptop' ? data.laptops : data.clothes
 
   return (
     <div className="app-container">
@@ -219,8 +219,8 @@ function StaffDashboard({ user, onLogout }) {
         <nav className="nav-menu">
           <button className={`nav-item ${tab === 'laptop' ? 'active' : ''}`}
             onClick={() => setTab('laptop')}>💻 Quản lý Laptop</button>
-          <button className={`nav-item ${tab === 'mobile' ? 'active' : ''}`}
-            onClick={() => setTab('mobile')}>📱 Quản lý Mobile</button>
+          <button className={`nav-item ${tab === 'clothes' ? 'active' : ''}`}
+            onClick={() => setTab('clothes')}>👕 Quản lý Clothes</button>
           <div style={{ flex: 1 }} />
           <button className="nav-item danger" onClick={onLogout}>Đăng xuất</button>
         </nav>
@@ -231,13 +231,13 @@ function StaffDashboard({ user, onLogout }) {
 
       <main className="main-content">
         <div className="page-header">
-          <h1>Quản lý <span>{tab === 'laptop' ? 'Laptop' : 'Mobile'}</span></h1>
+          <h1>Quản lý <span>{tab === 'laptop' ? 'Laptop' : 'Clothes'}</span></h1>
           <button className="btn btn-primary" onClick={openCreate}>+ Thêm sản phẩm</button>
         </div>
 
         <div className="tabs">
           <button className={`tab ${tab === 'laptop' ? 'active' : ''}`} onClick={() => setTab('laptop')}>Laptop ({data.laptops?.length || 0})</button>
-          <button className={`tab ${tab === 'mobile' ? 'active' : ''}`} onClick={() => setTab('mobile')}>Mobile ({data.mobiles?.length || 0})</button>
+          <button className={`tab ${tab === 'clothes' ? 'active' : ''}`} onClick={() => setTab('clothes')}>Clothes ({data.clothes?.length || 0})</button>
         </div>
 
         {loading ? (

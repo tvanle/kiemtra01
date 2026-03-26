@@ -35,7 +35,10 @@ export const api = {
         fetch(`${API}/api/laptop/laptops/`).then(r => r.json()),
 
     getMobiles: () =>
-        fetch(`${API}/api/mobile/mobiles/`).then(r => r.json()),
+        fetch(`${API}/api/clothes/clothes/`).then(r => r.json()),
+
+    getClothes: () =>
+        fetch(`${API}/api/clothes/clothes/`).then(r => r.json()),
 
     // ── Staff ──
     staffLogin: (data) =>
