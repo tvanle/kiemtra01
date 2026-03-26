@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #1a1a2e; min-height: 100vh; }
+        .header { background: #16213e; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { color: #e94560; font-size: 24px; }
+        .header a { color: #fff; text-decoration: none; }
+        .container { padding: 30px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab { padding: 10px 20px; background: #0f3460; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+        .tab.active { background: #e94560; }
+        table { width: 100%; border-collapse: collapse; background: #16213e; border-radius: 10px; overflow: hidden; }
+        th, td { padding: 15px; text-align: left; color: #fff; }
+        th { background: #0f3460; }
+        tr:hover { background: #1f4068; }
+        .btn { padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; }
+        .btn-edit { background: #4CAF50; color: #fff; }
+        .btn-delete { background: #f44336; color: #fff; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: #16213e; padding: 30px; border-radius: 10px; width: 500px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; color: #fff; margin-bottom: 5px; }
+        input, select { width: 100%; padding: 10px; border: none; border-radius: 5px; background: #0f3460; color: #fff; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+        .btn-cancel { background: #666; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Staff Dashboard</h1>
+        <a href="/api/staff/logout/">Logout</a>
+    </div>
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('laptops')">Laptops</button>
+            <button class="tab" onclick="showTab('clothes')">Clothes</button>
+        </div>
+        <button class="btn" style="background:#e94560;color:#fff;margin-bottom:20px;" onclick="openModal()">+ Add Product</button>
+        <div id="laptops-tab">
+            <h2 style="color:#fff;margin-bottom:15px;">Laptops</h2>
+            <table>
+                <thead><tr><th>ID</th><th>Name</th><th>Brand</th><th>Price</th><th>CPU</th><th>RAM</th><th>Actions</th></tr></thead>
+                <tbody id="laptops-body"></tbody>
+            </table>
+        </div>
+        <div id="clothes-tab" style="display:none;">
+            <h2 style="color:#fff;margin-bottom:15px;">Clothes</h2>
+            <table>
+                <thead><tr><th>ID</th><th>Name</th><th>Brand</th><th>Price</th><th>Size</th><th>Color</th><th>Actions</th></tr></thead>
+                <tbody id="clothes-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <h2 style="color:#e94560;margin-bottom:20px;" id="modalTitle">Add Product</h2>
+            <form id="productForm">
+                <input type="hidden" id="productId">
+                <input type="hidden" id="productType" value="laptop">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" name="name" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Brand</label>
+                    <input type="text" name="brand" id="brand" required>
+                </div>
+                <div class="form-group">
+                    <label>Price</label>
+                    <input type="number" name="price" id="price" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" name="description" id="description">
+                </div>
+                <div id="laptop-fields">
+                    <div class="form-group"><label>CPU</label><input type="text" name="cpu" id="cpu"></div>
+                    <div class="form-group"><label>RAM</label><input type="text" name="ram" id="ram"></div>
+                    <div class="form-group"><label>Storage</label><input type="text" name="storage" id="storage"></div>
+                </div>
+                <div id="clothes-fields" style="display:none;">
+                    <div class="form-group"><label>Size</label><input type="text" name="size" id="size"></div>
+                    <div class="form-group"><label>Color</label><input type="text" name="color" id="color"></div>
+                    <div class="form-group"><label>Material</label><input type="text" name="material" id="material"></div>
+                </div>
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="url" name="image_url" id="image_url">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn" style="background:#e94560;color:#fff;">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentEditId = null;
+
+        function showTab(tab) {
+            document.getElementById('laptops-tab').style.display = tab === 'laptops' ? 'block' : 'none';
+            document.getElementById('clothes-tab').style.display = tab === 'clothes' ? 'block' : 'none';
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('productType').value = tab === 'laptops' ? 'laptop' : 'clothes';
+            document.getElementById('laptop-fields').style.display = tab === 'laptops' ? 'block' : 'none';
+            document.getElementById('clothes-fields').style.display = tab === 'clothes' ? 'block' : 'none';
+        }
+
+        function loadProducts() {
+            fetch('/api/staff/products/')
+                .then(r => r.json())
+                .then(data => {
+                    const lb = document.getElementById('laptops-body');
+                    lb.innerHTML = data.laptops.map(l => `<tr><td>${l.id}</td><td>${l.name}</td><td>${l.brand}</td><td>${l.price}</td><td>${l.cpu || '-'}</td><td>${l.ram || '-'}</td><td><button class="btn btn-edit" onclick='editProduct("laptop",${l.id})'>Edit</button> <button class="btn btn-delete" onclick="deleteProduct('laptop',${l.id})">Delete</button></td></tr>`).join('');
+                    const cb = document.getElementById('clothes-body');
+                    cb.innerHTML = (data.clothes || []).map(c => `<tr><td>${c.id}</td><td>${c.name}</td><td>${c.brand}</td><td>${c.price}</td><td>${c.size || '-'}</td><td>${c.color || '-'}</td><td><button class="btn btn-edit" onclick='editProduct("clothes",${c.id})'>Edit</button> <button class="btn btn-delete" onclick="deleteProduct('clothes',${c.id})">Delete</button></td></tr>`).join('');
+                });
+        }
+
+        function openModal(type, id) {
+            currentEditId = id;
+            document.getElementById('productModal').classList.add('active');
+            document.getElementById('modalTitle').textContent = id ? 'Edit Product' : 'Add Product';
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').classList.remove('active');
+            document.getElementById('productForm').reset();
+            currentEditId = null;
+        }
+
+        function editProduct(type, id) {
+            const data = type === 'laptop'
+                ? document.getElementById('laptops-body').querySelector(`tr td:first-child`)?.parentElement
+                : null;
+            const endpoint = type === 'laptop' ? `/api/laptop/laptops/${id}/` : `/api/clothes/clothes/${id}/`;
+            fetch(endpoint)
+                .then(r => r.json())
+                .then(p => {
+                    document.getElementById('productId').value = id;
+                    document.getElementById('productType').value = type;
+                    document.getElementById('name').value = p.name;
+                    document.getElementById('brand').value = p.brand;
+                    document.getElementById('price').value = p.price;
+                    document.getElementById('description').value = p.description || '';
+                    if (type === 'laptop') {
+                        document.getElementById('cpu').value = p.cpu || '';
+                        document.getElementById('ram').value = p.ram || '';
+                        document.getElementById('storage').value = p.storage || '';
+                    } else {
+                        document.getElementById('size').value = p.size || '';
+                        document.getElementById('color').value = p.color || '';
+                        document.getElementById('material').value = p.material || '';
+                    }
+                    document.getElementById('image_url').value = p.image_url || '';
+                    openModal();
+                });
+        }
+
+        function deleteProduct(type, id) {
+            if (!confirm('Delete this product?')) return;
+            fetch(`/api/staff/product/${id}/delete/?type=${type}`, { method: 'DELETE' })
+                .then(() => loadProducts());
+        }
+
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('productId').value;
+            const type = document.getElementById('productType').value;
+            const data = {
+                name: document.getElementById('name').value,
+                brand: document.getElementById('brand').value,
+                price: document.getElementById('price').value,
+                description: document.getElementById('description').value,
+                type: type
+            };
+            if (type === 'laptop') {
+                data.cpu = document.getElementById('cpu').value;
+                data.ram = document.getElementById('ram').value;
+                data.storage = document.getElementById('storage').value;
+            } else {
+                data.size = document.getElementById('size').value;
+                data.color = document.getElementById('color').value;
+                data.material = document.getElementById('material').value;
+            }
+            data.image_url = document.getElementById('image_url').value;
+
+            const endpoint = id ? `/api/staff/product/${id}/update/` : `/api/staff/product/create/`;
+            fetch(endpoint, {
+                method: id ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).then(() => { closeModal(); loadProducts(); });
+        });
+
+        loadProducts();
+    </script>
+</body>
+</html>

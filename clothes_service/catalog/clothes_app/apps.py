@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
-class MobileAppConfig(AppConfig):
+class ClothesAppConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'mobile_app'
+    name = 'clothes_app'

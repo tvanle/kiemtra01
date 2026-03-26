@@ -26,14 +26,23 @@ services:
     ports:
       - "5431:5432"
 
-  db_mobile:
+  db_clothes:
     image: postgres:15
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: mobile_db
+      POSTGRES_DB: clothes_db
     ports:
       - "5435:5432"
+
+  db_cart:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: cart_db
+    ports:
+      - "5437:5432"
 
   api_gateway:
     build:
@@ -44,7 +53,8 @@ services:
       - customer_service
       - staff_service
       - laptop_service
-      - mobile_service
+      - clothes_service
+      - cart_service
 
   customer_service:
     build:
@@ -76,12 +86,22 @@ services:
     depends_on:
       - db_laptop
 
-  mobile_service:
+  clothes_service:
     build:
-      context: ./mobile_service
+      context: ./clothes_service
     ports:
       - "8039:8000"
     environment:
-      - DATABASE_URL=postgres://user:password@db_mobile:5432/mobile_db
+      - DATABASE_URL=postgres://user:password@db_clothes:5432/clothes_db
     depends_on:
-      - db_mobile
+      - db_clothes
+
+  cart_service:
+    build:
+      context: ./cart_service
+    ports:
+      - "8041:8000"
+    environment:
+      - DATABASE_URL=postgres://user:password@db_cart:5432/cart_db
+    depends_on:
+      - db_cart
