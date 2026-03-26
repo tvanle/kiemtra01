@@ -21,9 +21,15 @@ def create_product(request):
     # Proxy to correct service
     prod_type = request.data.get('type') # 'laptop' or 'mobile'
     if prod_type == 'laptop':
-        res = requests.post('http://api_gateway/api/laptop/laptops/', json=request.data, timeout=5)
-        return Response(res.json(), status=res.status_code)
+        res = requests.post('http://laptop_service:8000/api/laptops/', headers={'Host': 'localhost'}, json=request.data, timeout=5)
+        try:
+            return Response(res.json(), status=res.status_code)
+        except:
+            return Response({'error': res.text}, status=res.status_code)
     elif prod_type == 'mobile':
-        res = requests.post('http://api_gateway/api/mobile/mobiles/', json=request.data, timeout=5)
-        return Response(res.json(), status=res.status_code)
+        res = requests.post('http://mobile_service:8000/api/mobiles/', headers={'Host': 'localhost'}, json=request.data, timeout=5)
+        try:
+            return Response(res.json(), status=res.status_code)
+        except:
+            return Response({'error': res.text}, status=res.status_code)
     return Response({'error': 'Invalid product type'}, status=status.HTTP_400_BAD_REQUEST)

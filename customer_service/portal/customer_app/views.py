@@ -36,13 +36,13 @@ def search_products(request):
     
     # Calls to other services (through gateway ideally, but direct internal network is faster here)
     try:
-        laptop_res = requests.get(f'http://api_gateway/api/laptop/laptops/?search={query}', timeout=3)
+        laptop_res = requests.get(f'http://laptop_service:8000/api/laptops/?search={query}', headers={'Host': 'localhost'}, timeout=3)
         laptops = laptop_res.json() if laptop_res.status_code == 200 else []
     except:
         laptops = []
         
     try:
-        mobile_res = requests.get(f'http://api_gateway/api/mobile/mobiles/?search={query}', timeout=3)
+        mobile_res = requests.get(f'http://mobile_service:8000/api/mobiles/?search={query}', headers={'Host': 'localhost'}, timeout=3)
         mobiles = mobile_res.json() if mobile_res.status_code == 200 else []
     except:
         mobiles = []
